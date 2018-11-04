@@ -1,0 +1,13 @@
+{% extends "bender.html" %}
+
+{% block OwnLinks %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static "/css/base.css" %}">
+{% endblock %}
+
+{% block NamePage %}
+  <div class="pb-3 mb-4 font-italic border-bottom row">
+        <h3 class="col-4">Questions</h3>
+        <a href="questions.html" class="Hot_qeue">Hot Questions</a>
+  </div>
+{% endblock %}
