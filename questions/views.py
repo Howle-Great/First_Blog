@@ -86,7 +86,7 @@ def tag(request):
     latest_question_list = Question.objects.order_by()
     template = loader.get_template('tag.html')
     context = {
-        'questions': latest_question_list,
+        'questions': paginate(latest_question_list, request, 2)
     }
     return HttpResponse(template.render(context, request))
 
