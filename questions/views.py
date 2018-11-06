@@ -1,55 +1,99 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.shortcuts import render
 from django.views.generic import TemplateView
-
-from django.core.paginator import Paginator, EmptyPage
-from django.http import Http404
-
+from django.template import loader
+from django.http import HttpResponse, Http404
+from .models import *
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.shortcuts import render, get_object_or_404
+from questions.models import *
 # Create your views here.
 
+def paginate(objects_list, request, amount):
+    pag = Paginator(objects_list, amount)
+    asd = request.GET.get('page')
+    try:
+        page = pag.page(asd)
+    except PageNotAnInteger:
+        page = pag.page(1)
+    except EmptyPage:
+        page = pag.page(pag.num_pages)
+    return page
 
-class AboutView(TemplateView):
-	template_name = "base.html"
+'''def paginate(objects, request, amount):
+    paginator = Paginator(objects, amount)
+    page = request.GET.get('page')
+    objects_page = paginator.get_page(page)
+    return objects_page'''
 
-class AskView(TemplateView):
-	template_name = "bender.html"
+def index(request):
+    latest_question_list = Question.objects.order_by()
+    template = loader.get_template('bender.html')
+    context = {
+    'questions': paginate(latest_question_list, request, 2)
+    }
+    return HttpResponse(template.render(context, request))
+'''
+def index(request):
+    return render(request, 'bander.html', {
+        'questions': paginate(request, Question.objects.all(), 3),
+        })'''
 
-class QuestionView(TemplateView):
-	template_name = "questions.html"
+def question(request, number):
+    question = get_object_or_404(Question, pk=number)
+    # latest_question_list = Question.objects.get
+    return render(request,'questions.html', context={
+        'questionOne':question,
+        'questions' :question.answers.all()
+        })
+   
+def ask(request):
+    latest_question_list = Question.objects.order_by()
+    template = loader.get_template('ask.html')
+    context = {
+        'questions': latest_question_list,
+    }
+    return HttpResponse(template.render(context, request))
 
-class TagView(TemplateView):
-	template_name = "ask.html"
+def settings(request):
+    latest_question_list = Question.objects.order_by()
+    template = loader.get_template('settings.html')
+    context = {
+        'questions': latest_question_list,
+    }
+    return HttpResponse(template.render(context, request))
 
-class SettingsView(TemplateView):
-	template_name = "settings.html"
+def login(request):
+    latest_question_list = Question.objects.order_by()
+    template = loader.get_template('login.html')
+    context = {
+        'questions': latest_question_list,
+    }
+    return HttpResponse(template.render(context, request))
 
-class RegistrationView(TemplateView):
-	template_name = "registration.html"
+def registration(request):
+    latest_question_list = Question.objects.order_by()
+    template = loader.get_template('registration.html')
+    context = {
+        'questions': latest_question_list,
+    }
+    return HttpResponse(template.render(context, request))
 
-class LoginView(TemplateView):
-	template_name = "login.html"
-		
 
 
-def question_view(request, page = 1):
-	questions = []
-	for i in xrange(1,30):
-		questions.append({
-			'title': 'title' + str(i),
-    		'id': i,
-    		'text': 'text' + str(i),
-    		'rating': 100 + i,
-    		'link': 'answer',
-    		'avatar': 'empty.png'
-			})
-	paginator = Paginator(questions, 10);
 
-	try:
-		questions_page = paginator.page(page)
-	except EmptyPage:
-		raise Http404
-	return render(request, 'hot.html', {
-		'questions': questions_page,
-		'pages': range(1, paginator.num_pages + 1)
-		})
+def tag(request):
+    latest_question_list = Question.objects.order_by()
+    template = loader.get_template('tag.html')
+    context = {
+        'questions': latest_question_list,
+    }
+    return HttpResponse(template.render(context, request))
+
+def hot(request):
+    latest_question_list = Question.objects.top()
+    template = loader.get_template('hot.html')
+    context = {
+        'questions': paginate(latest_question_list, request, 3)
+    }
+    return HttpResponse(template.render(context, request))

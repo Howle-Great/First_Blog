@@ -19,7 +19,7 @@
     </div>
   </div>
 {% endblock %}
-
+{{question.}}
 {% block NamePage %}
   <div class="Top_Post">
     <div class="pb-3 mb-4 font-italic border-bottom row">
@@ -36,8 +36,8 @@
             </select>
           </div>
           <div class="Context_Post col-md-8">
-            <h2 class="blog-post-title">How to built a moon park?</h2>
-            <p>Guys, I have trouble with moon park! Can't find the black-jake!...</p>
+            <h2 class="blog-post-title">{{questionOne.title}}</h2>
+            <p>{{questionOne.text}}</p>
             <div class="blog-post-meta row Post_title_bottom_up">
                 <p>Tags: <a href="#">black-jack</a> <a href="#">bender</a></p>
             </div>
@@ -46,20 +46,45 @@
     </div>
   </div>
 {% endblock %}
+{% block userPost %}
+                    {% for q in questions %}
+                      <div class="blog-post row Post">
+                      <div class="avatarka_in_post col-md-2 ">
+                        {% load static %}
+                        <a href="#"><img src="{% static "/img/Empty2.jpg" %}" width="90" height="90"></a>
+                        <select name="likes" class="likes">
+                                            <option selected="">5</option>
+                                            <option>4</option>
+                                            <option>3</option>
+                                            <option>2</option>
+                                            <option>1</option>
+                        </select>
+                      </div>
+                      <div class="Context_Post col-md-9">
+                        <h2 class="blog-post-title">{{q.title}}</h2>
+                        <p>{{q.text}}</p>
+                        {% block BottomOnePost %}
+                          <div class="blog-post-meta row Post_title_bottom">
+                            <form>
+                              <input type="checkbox" name="corect"> <span class="Post_title_bottom">Correct!</span>
+                            </form>
+                          </div>
+                        {% endblock %}
+                      </div>
+                    </div>
 
-{% block BottomOnePost %}
-  <div class="blog-post-meta row Post_title_bottom">
-    <form>
-      <input type="checkbox" name="corect"> <span class="Post_title_bottom">Correct!</span>
-    </form>
-  </div>
-{% endblock %}
-
-{% block PostEnd %}
+              {% block PostEnd %}
   <form >
     <textarea class="form-control" name="text" rows="3" value="text" placeholder="Enter your answer hear.."></textarea><br>
     <button class="btn btn-primary btn-lg" type="submit">Ask!</button>
   </form>
 {% endblock %}
+
+
+                    {% endfor %}
+              {% endblock userPost %}
+
+
+
 
 {% block listing %} {% endblock %}

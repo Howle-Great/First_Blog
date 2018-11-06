@@ -13,14 +13,15 @@ from django.dispatch import receiver
 
 # AUTH_USER_MODEL set in settings
 class Profile(models.Model):
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
-  avatar = models.ImageField(upload_to='uploads/%Y/%m/%d/')
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	avatar = models.ImageField(upload_to='uploads/%Y/%m/%d/')
+	nickname = models.CharField(max_length=200)
+	mail = models.EmailField(max_length=200)
+	login = models.CharField(max_length=200)
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=20, default="404", verbose_name="Question's Tag")
-
-    #objects = TagManager()
+    name = models.CharField(max_length=40, default="404", verbose_name="Question's Tag")
 
     def __str__(self):
         return self.name
@@ -37,14 +38,8 @@ class LikeDislike(models.Model):
 
     vote = models.SmallIntegerField(verbose_name=("Vote"), choices=VOTES)
     user = models.ForeignKey(User, verbose_name=("User"))
-
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-
     object_id = models.PositiveIntegerField()
-
-    content_object = GenericForeignKey()
-
-    #objects = LikeDislikeManager()
 
     def __str__(self):
         return self.user.username + " liked"
@@ -58,9 +53,6 @@ class Question(models.Model):
     rating = models.IntegerField(default=0, null=False, verbose_name="Question's Rating")
     is_active = models.BooleanField(default=True, verbose_name="Question's Availability")
     tags = models.ManyToManyField(Tag, default=True, related_name='questions', verbose_name="Question's Tags")
-    votes = GenericRelation(LikeDislike, related_query_name='questions')
-
-    #objects = QuestionManager()
 
     def __str__(self):
         return self.text
@@ -73,7 +65,6 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, related_name='answers', verbose_name="Answer's Question")
     text = models.TextField(verbose_name="Answer's Content")
     rating = models.IntegerField(default=0, null=False, verbose_name="Answer's Rating")
-    votes = GenericRelation(LikeDislike, related_query_name='answers')
 
     #objects = AnswerManager()
 
